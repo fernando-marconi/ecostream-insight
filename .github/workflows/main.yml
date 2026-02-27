@@ -18,7 +18,8 @@ jobs:
           python-version: '3.9'
 
       - name: Instalar dependencias
-        run: pip install requests pandas python-dotenv
+        run: |
+          pip install requests pandas python-dotenv
 
       - name: Executar coletor
         env:
