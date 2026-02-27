@@ -2,8 +2,8 @@ name: Coleta Automatica de Dados
 
 on:
   schedule:
-    - cron: '0 */6 * * *' # Roda a cada 6 horas
-  workflow_dispatch: # Permite rodar manualmente pelo site do GitHub
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -18,7 +18,7 @@ jobs:
           python-version: '3.9'
 
       - name: Instalar dependencias
-        run: pip install requests pandas python-dotenv
+        run: pip install requests pandas
 
       - name: Executar coletor
         env:

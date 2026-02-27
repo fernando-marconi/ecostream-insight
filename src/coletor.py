@@ -2,12 +2,8 @@ import os
 import requests
 import pandas as pd
 from datetime import datetime
-from dotenv import load_dotenv
 
-load_dotenv()
-TOKEN = os.getenv("WAQI_TOKEN")
-
-# Lista de cidades estratégica para o portfólio
+TOKEN = os.getenv("WAQI_TOKEN") # O GitHub Action preenche isso automaticamente
 CIDADES = [
     "sao-paulo", "rio-de-janeiro", "curitiba", "manaus", 
     "beijing", "delhi", "new-york", "mexico-city", 
