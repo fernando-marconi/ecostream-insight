@@ -3,13 +3,16 @@ import requests
 import pandas as pd
 from datetime import datetime
 
+# Teste de leitura do Token
 TOKEN = os.getenv("WAQI_TOKEN")
 CIDADES = ["sao-paulo", "rio-de-janeiro", "curitiba", "manaus", "beijing", "delhi", "new-york", "mexico-city", "oslo", "reykjavik"]
 
 def coletar_e_salvar():
-    # Cria a pasta se ela sumir por algum motivo no ambiente temporário
+    if not TOKEN:
+        print("ERRO CRITICO: Token WAQI_TOKEN nao encontrado nas variaveis de ambiente!")
+        return
+
     os.makedirs('data', exist_ok=True)
-        
     caminho_arquivo = "data/historico_ar.csv"
     lista_novos_dados = []
 
@@ -18,23 +21,21 @@ def coletar_e_salvar():
     for cidade in CIDADES:
         try:
             url = f"https://api.waqi.info/feed/{cidade}/?token={TOKEN}"
-            response = requests.get(url, timeout=10)
-            if response.status_code == 200:
-                data_json = response.json().get('data')
-                if data_json and isinstance(data_json, dict):
-                    aqi = data_json.get('aqi')
-                    # Verifica se o AQI é um número válido antes de salvar
-                    if aqi is not None:
-                        lista_novos_dados.append({
-                            "data_hora": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                            "cidade": cidade,
-                            "aqi": aqi
-                        })
-                        print(f"Sucesso: {cidade} ({aqi})")
+            response = requests.get(url, timeout=15)
+            dados = response.json()
+            
+            if response.status_code == 200 and dados.get('status') == 'ok':
+                aqi = dados['data'].get('aqi')
+                lista_novos_dados.append({
+                    "data_hora": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    "cidade": cidade,
+                    "aqi": aqi
+                })
+                print(f"Sucesso: {cidade} ({aqi})")
             else:
-                print(f"Erro API {cidade}: Status {response.status_code}")
+                print(f"Falha na cidade {cidade}: {dados.get('data', 'Sem detalhes')}")
         except Exception as e:
-            print(f"Falha critica em {cidade}: {str(e)}")
+            print(f"Erro na conexao com {cidade}: {e}")
 
     if lista_novos_dados:
         df_novos = pd.DataFrame(lista_novos_dados)
@@ -42,13 +43,9 @@ def coletar_e_salvar():
             df_novos.to_csv(caminho_arquivo, index=False)
         else:
             df_novos.to_csv(caminho_arquivo, mode='a', header=False, index=False)
-        print(f"Arquivo atualizado com {len(lista_novos_dados)} novas linhas.")
+        print("Processo concluido com sucesso.")
     else:
-        print("ALERTA: Nenhum dado foi coletado. O arquivo nao sera gerado.")
-        # Cria um arquivo vazio apenas para o git add nao dar erro fatal
-        if not os.path.isfile(caminho_arquivo):
-            with open(caminho_arquivo, 'w') as f:
-                f.write("data_hora,cidade,aqi\n")
+        print("ALERTA: Nenhum dado foi coletado. Verifique o Token ou a conexao da API.")
 
 if __name__ == "__main__":
     coletar_e_salvar()
