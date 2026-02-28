@@ -18,8 +18,11 @@ if os.path.exists(PATH_DATA):
         # Carregando os dados coletados
         df = pd.read_csv(PATH_DATA)
         
-        # Limpeza básica: remove linhas vazias para evitar erros no gráfico
-        df = df.dropna()
+        # Converte AQI para numérico, transformando erros (como '-') em NaN
+        df['aqi'] = pd.to_numeric(df['aqi'], errors='coerce')
+        
+        # Remove linhas onde o AQI é inválido
+        df = df.dropna(subset=['aqi'])
 
         if not df.empty:
             # Converte a coluna de data para o formato de tempo do Python
