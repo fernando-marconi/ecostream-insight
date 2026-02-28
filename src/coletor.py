@@ -17,7 +17,7 @@ def coletar_e_salvar():
     os.makedirs('data', exist_ok=True)
     caminho_arquivo = "data/historico_ar.csv"
     
-    CIDADES = ["sao-paulo", "rio-de-janeiro", "curitiba", "manaus", "beijing", "delhi", "new-york", "mexico-city", "oslo", "reykjavik"]
+    CIDADES = ["sao-paulo", "santos", "cubatao", "beijing", "delhi", "negotin", "new-york", "mexico-city", "oslo", "reykjavik"]
     lista_novos_dados = []
 
     for cidade in CIDADES:
