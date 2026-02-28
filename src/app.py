@@ -24,11 +24,13 @@ if os.path.exists(PATH_DATA):
         # Remove linhas onde o AQI é inválido
         df = df.dropna(subset=['aqi'])
 
+        # Garante que o AQI seja tratado como inteiro para exibição
+        df['aqi'] = df['aqi'].astype(int)
+
         if not df.empty:
             # Converte a coluna de data para o formato de tempo do Python
             df['data_hora'] = pd.to_datetime(df['data_hora'])
             
-            # SITUAÇÃO ATUAL
             st.subheader("Situação Atual das Cidades")
             
             # Obtém apenas a última leitura registrada para cada cidade
