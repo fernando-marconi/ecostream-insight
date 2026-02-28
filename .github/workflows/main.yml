@@ -21,9 +21,11 @@ jobs:
         run: pip install requests pandas
 
       - name: Executar coletor
+        shell: bash
         env:
           WAQI_TOKEN: ${{ secrets.WAQI_TOKEN }}
-        run: python src/coletor.py
+        run: |
+          python src/coletor.py
 
       - name: Salvar alteracoes no repo
         env:
