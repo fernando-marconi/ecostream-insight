@@ -6,40 +6,40 @@ def processar_dados():
     caminho_limpo = "data/dados_preparados.csv"
 
     if not os.path.exists(caminho_bruto):
-        print("Erro: Arquivo bruto nao encontrado para processamento.")
+        print("Erro: Arquivo bruto nao encontrado.")
         return
 
-    # 1. Carregamento e Limpeza Inicial
+    # Carregamento e Limpeza
     df = pd.read_csv(caminho_bruto)
     df['aqi'] = pd.to_numeric(df['aqi'], errors='coerce')
     df = df.dropna(subset=['aqi'])
     df['data_hora'] = pd.to_datetime(df['data_hora'])
     
-    # Ordenar por cidade e tempo para os calculos fazerem sentido
+    # Ordenar por cidade e tempo
     df = df.sort_values(by=['cidade', 'data_hora'])
 
-    # 2. Engenharia de Atributos (Feature Engineering)
-    
-    # Extrair a hora do dia
+    # Engenharia de Atributos (Ajuste de Horarios)
     df['hora'] = df['data_hora'].dt.hour
     
-    # Criar categorias de periodo do dia
-    # 0-6: Madrugada, 6-12: Manha, 12-18: Tarde, 18-24: Noite
-    bins = [0, 6, 12, 18, 24]
+    # Definicao dos periodos:
+    # 0-5: Madrugada | 6-11: Manha | 12-17: Tarde | 18-23: Noite
+    bins = [-1, 5, 11, 17, 23] 
     labels = ['Madrugada', 'Manha', 'Tarde', 'Noite']
-    df['periodo_dia'] = pd.cut(df['hora'], bins=bins, labels=labels, include_lowest=True)
+    df['periodo_dia'] = pd.cut(df['hora'], bins=bins, labels=labels)
 
-    # 3. Calculos de Tendencia (Por Cidade)
-    # Media movel das ultimas 3 coletas para suavizar picos isolados
-    df['tendencia_aqi'] = df.groupby('cidade')['aqi'].transform(lambda x: x.rolling(window=3, min_periods=1).mean())
+    # Calculos de Tendencia e Variacao
+    # Media movel (Tendencia) - Usando min_periods=1 para evitar NaNs
+    df['tendencia_aqi'] = df.groupby('cidade')['aqi'].transform(
+        lambda x: x.rolling(window=3, min_periods=1).mean()
+    )
     
-    # Variacao imediata (Diferenca entre a leitura atual e a anterior)
+    # Variacao em relacao a leitura anterior
     df['variacao_imediata'] = df.groupby('cidade')['aqi'].diff().fillna(0)
 
-    # 4. Salvar o "Dataset" Pronto para a IA
+    # Salvamento
     df.to_csv(caminho_limpo, index=False)
-    print(f"✅ Sucesso! Dados processados e salvos em: {caminho_limpo}")
-    print(f"📈 Total de registros prontos: {len(df)}")
+    print("Processamento concluido com as novas regras de horários.")
+    print("Arquivo gerado: " + caminho_limpo)
 
 if __name__ == "__main__":
     processar_dados()
