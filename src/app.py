@@ -93,3 +93,17 @@ if os.path.exists(PATH_DATA):
 else:
     st.error("O arquivo 'data/historico_ar.csv' não foi detectado no sistema local.")
     st.info("Certifique-se de que o robô do GitHub já executou com sucesso e faça um 'git pull'.")
+
+# SEÇÃO DE ENGENHARIA DE DADOS (DADOS PREPARADOS)
+PATH_PREPARADO = "data/dados_preparados.csv"
+
+if os.path.exists(PATH_PREPARADO):
+    with st.expander("🔬 Visualizar Dados Processados (Matéria-Prima da IA)"):
+        df_prep = pd.read_csv(PATH_PREPARADO)
+        st.write("Aqui estão as colunas que a IA usará para aprender:")
+        
+        # Mostra as colunas novas: periodo_dia, tendencia_aqi, variacao_imediata
+        cols_ia = ['data_hora', 'cidade', 'aqi', 'periodo_dia', 'tendencia_aqi', 'variacao_imediata']
+        st.dataframe(df_prep[cols_ia].tail(10), use_container_width=True)
+        
+        st.info("💡 Note como a 'tendencia_aqi' suaviza os valores e o 'periodo_dia' categoriza o horário.")

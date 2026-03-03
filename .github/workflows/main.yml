@@ -2,7 +2,8 @@ name: Coleta Automatica de Dados
 
 on:
   schedule:
-    - cron: '0 */6 * * *'
+    # Roda no minuto 0 de cada hora (ex: 13:00, 14:00...)
+    - cron: '0 * * * *'
   workflow_dispatch:
 
 jobs:
