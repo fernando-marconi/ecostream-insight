@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-TOKEN = os.getenv("TOKEN_WAQI")
+TOKEN = os.getenv("WAQI_TOKEN")
 
 def processar_dados():
     caminho_bruto = "data/historico_ar.csv"
