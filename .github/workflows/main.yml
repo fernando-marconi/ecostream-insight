@@ -25,6 +25,7 @@ jobs:
         shell: bash
         env:
           WAQI_TOKEN: ${{ secrets.WAQI_TOKEN }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: |
           python src/coletor.py
 
