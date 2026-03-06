@@ -1,5 +1,8 @@
-requests
-pandas
 streamlit
-python-dotenv
+pandas
 plotly
+joblib
+numpy
+groq
+python-dotenv
+scikit-learn

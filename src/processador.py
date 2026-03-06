@@ -1,5 +1,9 @@
 import pandas as pd
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
+TOKEN = os.getenv("TOKEN_WAQI")
 
 def processar_dados():
     caminho_bruto = "data/historico_ar.csv"
@@ -24,7 +28,7 @@ def processar_dados():
     # Definicao dos periodos:
     # 0-5: Madrugada | 6-11: Manha | 12-17: Tarde | 18-23: Noite
     bins = [-1, 5, 11, 17, 23] 
-    labels = ['Madrugada', 'Manha', 'Tarde', 'Noite']
+    labels = ['Madrugada', 'Manhã', 'Tarde', 'Noite']
     df['periodo_dia'] = pd.cut(df['hora'], bins=bins, labels=labels)
 
     # Calculos de Tendencia e Variacao

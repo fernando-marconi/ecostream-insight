@@ -2,6 +2,8 @@
 venv/
 .env
 __pycache__/
+data/dados_preparados.csv
+models/modelo_aqi.pkl
 =======
 # Byte-compiled / optimized / DLL files
 __pycache__/
